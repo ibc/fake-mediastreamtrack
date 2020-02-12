@@ -3,7 +3,16 @@ const uuidv4 = require('uuid/v4');
 
 class FakeMediaStreamTrack extends EventTarget
 {
-	constructor({ kind, id, label, isolated } = {})
+	constructor(
+		{
+			kind,
+			id,
+			label,
+			isolated,
+			muted,
+			data
+		} = {}
+	)
 	{
 		super();
 
@@ -11,100 +20,141 @@ class FakeMediaStreamTrack extends EventTarget
 			throw new TypeError('missing kind');
 
 		// Id.
-		// @readonly
 		// @type {string}
-		this.id = id || uuidv4();
-
+		this._id = id || uuidv4();
 		// Kind ('audio' or 'video').
-		// @readonly
 		// @type {string}
-		this.kind = kind;
-
+		this._kind = kind;
 		// Label.
-		// @readonly
 		// @type {string}
-		this.label = label | '';
-
+		this._label = label || '';
 		// Isolated.
-		// @readonly
 		// @type {boolean}
-		this.isolated = isolated | false;
-
+		this._isolated = isolated || false;
 		// Enabled flag.
 		// @type {boolean}
-		this.enabled = true;
-
+		this._enabled = true;
 		// Muted flag.
-		// @readonly
 		// @type {boolean}
-		this.muted = false;
-
+		this._muted = muted || false;
 		// Ready state ('live' or 'ended').
-		// @readonly
 		// @type {string}
-		this.readyState = 'live';
-
+		this._readyState = 'live';
 		// Custom data.
 		// @type {any}
-		this.data = null;
+		this._data = data;
 	}
 
-	clone({ id } = {})
+	get id()
 	{
-		const newTrack = new FakeMediaStreamTrack(
+		return this._id;
+	}
+
+	get kind()
+	{
+		return this._kind;
+	}
+
+	get label()
+	{
+		return this._label;
+	}
+
+	get isolated()
+	{
+		return this._isolated;
+	}
+
+	get enabled()
+	{
+		return this._enabled;
+	}
+
+	set enabled(enabled)
+	{
+		const changed = this._enabled !== enabled;
+
+		this._enabled = enabled;
+
+		if (changed)
+			this.dispatchEvent({ type: '@enabledchange' });
+	}
+
+	get muted()
+	{
+		return this._muted;
+	}
+
+	get readyState()
+	{
+		return this._readyState;
+	}
+
+	get data()
+	{
+		return this._data;
+	}
+
+	set data(data)
+	{
+		this._data = data;
+	}
+
+	clone({ id, data } = {})
+	{
+		return new FakeMediaStreamTrack(
 			{
 				id         : id || uuidv4(),
-				kind       : this.kind,
-				label      : this.label,
-				enabled    : this.enabled,
-				muted      : this.muted,
-				readyState : this.readyState,
-				data       : this.data
+				kind       : this._kind,
+				label      : this._label,
+				isolated   : this._isolated,
+				enabled    : this._enabled,
+				muted      : this._muted,
+				readyState : this._readyState,
+				data       : data !== undefined ? data : this._data
 			});
-
-		return newTrack;
 	}
 
 	stop()
 	{
-		if (this.readyState === 'ended')
+		if (this._readyState === 'ended')
 			return;
 
-		this.readyState = 'ended';
+		this._readyState = 'ended';
 	}
 
 	remoteStop()
 	{
-		if (this.readyState === 'ended')
+		if (this._readyState === 'ended')
 			return;
 
-		this.readyState = 'ended';
+		this._readyState = 'ended';
 
 		this.dispatchEvent({ type: 'ended' });
 	}
 
 	remoteMute()
 	{
-		if (this.muted)
+		if (this._muted)
 			return;
 
-		this.muted = true;
+		this._muted = true;
 
 		this.dispatchEvent({ type: 'mute' });
 	}
 
 	remoteUnmute()
 	{
-		if (!this.muted)
+		if (!this._muted)
 			return;
 
-		this.muted = false;
+		this._muted = false;
 
 		this.dispatchEvent({ type: 'unmute' });
 	}
 }
 
-// Define EventTarget properties
+// Define EventTarget properties.
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'ended');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'mute');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'unmute');

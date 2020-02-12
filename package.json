@@ -1,11 +1,11 @@
 {
   "name": "fake-mediastreamtrack",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Fake W3C MediaStreamTrack implementation",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "lint": "eslint -c .eslintrc.js lib"
+    "lint": "eslint -c .eslintrc.js index.js"
   },
   "author": "Iñaki Baz Castillo <ibc@aliax.net> (https://inakibaz.me)",
   "license": "ISC",

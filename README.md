@@ -25,7 +25,9 @@ const track = new FakeMediaStreamTrack({ kind: 'audio' });
 
 track.enabled = false;
 
-console.log('track.readyState: %s, track.enabled: %s', track.readyState, track.enabled);
+console.log(
+  'track.readyState: %s, track.enabled: %s', track.readyState, track.enabled
+);
 // => 'track.readyState: live, track.enabled: false'
 
 const clonedTrack = track.clone();
@@ -47,13 +49,21 @@ console.log('clonedTrack.readyState: %s', clonedTrack.readyState);
 The `FakeMediaStreamTrack` class constructor accepts an object with the following fields.
 
 ```js
-const track = new FakeMediaStreamTrack({ kind, id, label, isolated })
+const track = new FakeMediaStreamTrack({ kind, id, label, isolated, muted, data })
 ```
 
 * `kind` (string, mandatory): "audio" or "video".
 * `id` (string, optional): Track unique identificator. If not given, a random one is generated.
-* `label` (string, optional): Track label.
+* `label` (string, optional): Track label. Defaults to empty string.
 * `isolated` (boolean, optional): See the [spec](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack). Defaults to `false`.
+* `muted` (boolean, optional): Whether this track belongs to a muted source. Defaults to `false`.
+* `data` (any, options): Custom application data.
+
+### Custom setters and getters
+
+* `track.data` getter returns custom application `data`.
+* `track.data = data` setter updates custom application `data`.
+* `track.enabled = flag` setter fires a proprietary "@enabledchange" event if the `enabled` property changed.
 
 ### Custom methods
 
@@ -62,12 +72,23 @@ const track = new FakeMediaStreamTrack({ kind, id, label, isolated })
 * `track.remoteUnmute()` emulates a unmute generated remotely. It will fired "unmute" event if not already unmuted.
 
 ```js
+const { FakeMediaStreamTrack } = require('fake-mediastreamtrack');
 const track = new FakeMediaStreamTrack({ kind: 'video' });
 
 track.onended = () => console.log('track ended (1)');
 track.addEventListener('ended', () => console.log('track ended (2)'));
 
+track.addEventListener('@enabledchange', () => {
+  console.log('track enabled changed:', track.enabled);
+});
+
+track.enabled = false;
+track.enabled = false;
+track.enabled = true;
 track.remoteStop();
+
+// => track enabled changed: false
+// => track enabled changed: true
 // => track ended (1)
 // => track ended (2)
 ```
