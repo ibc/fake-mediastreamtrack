@@ -158,6 +158,7 @@ class FakeMediaStreamTrack extends EventTarget
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'ended');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'mute');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'unmute');
+defineEventAttribute(FakeMediaStreamTrack.prototype, '@enabledchange');
 // NOTE: These are not implemented/dispatched.
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'isolationchange');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'overconstrained');

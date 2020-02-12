@@ -6,15 +6,30 @@ export class FakeMediaStreamTrack extends MediaStreamTrack {
 		{
 			kind,
 			id,
-			label
+			label,
+			isolated,
+			muted,
+			data
 		}:
 		{
 			kind: 'audio' | 'video';
 			id?: string;
 			label?: string;
-			isolated?: boolean
+			isolated?: boolean;
+			muted?: boolean;
+			data?: any;
 		}
 	);
+
+	/**
+	 * Returns custom application data.
+	 */
+	get data(): any;
+
+	/**
+	 * Updates custom application data.
+	 */
+	set data(data);
 
 	/**
 	 * Emulates a stop generated remotely. It will fired "ended" event if not
