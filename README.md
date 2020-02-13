@@ -57,12 +57,11 @@ const track = new FakeMediaStreamTrack({ kind, id, label, isolated, muted, data 
 * `label` (string, optional): Track label. Defaults to empty string.
 * `isolated` (boolean, optional): See the [spec](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack). Defaults to `false`.
 * `muted` (boolean, optional): Whether this track belongs to a muted source. Defaults to `false`.
-* `data` (any, options): Custom application data.
+* `data` (object, options): An object with custom application data.
 
 ### Custom setters and getters
 
-* `track.data` getter returns custom application `data`.
-* `track.data = data` setter updates custom application `data`.
+* `track.data` getter returns custom application `data` object. The app can write into it at any time.
 * `track.enabled = flag` setter fires a proprietary "@enabledchange" event if the `enabled` property changed.
 
 ### Custom methods

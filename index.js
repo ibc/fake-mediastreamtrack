@@ -42,7 +42,7 @@ class FakeMediaStreamTrack extends EventTarget
 		this._readyState = 'live';
 		// Custom data.
 		// @type {any}
-		this._data = data;
+		this._data = data || {};
 	}
 
 	get id()
@@ -97,7 +97,7 @@ class FakeMediaStreamTrack extends EventTarget
 
 	set data(data)
 	{
-		this._data = data;
+		throw new TypeError('cannot replace data object');
 	}
 
 	clone({ id, data } = {})

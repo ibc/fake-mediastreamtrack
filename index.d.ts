@@ -27,11 +27,6 @@ export class FakeMediaStreamTrack extends MediaStreamTrack {
 	get data(): any;
 
 	/**
-	 * Updates custom application data.
-	 */
-	set data(data);
-
-	/**
 	 * Emulates a stop generated remotely. It will fired "ended" event if not
 	 * already stopped.
 	 */
