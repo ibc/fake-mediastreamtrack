@@ -64,9 +64,10 @@ const track = new FakeMediaStreamTrack({ kind, id, label, isolated, muted, data 
 * `track.data` getter returns custom application `data` object. The app can write into it at any time.
 * `track.enabled = flag` setter fires a proprietary "@enabledchange" event if the `enabled` property changed.
 
-### Custom methods
+### Custom methods and additions
 
-* `track.remoteStop()` emulates a stop generated remotely. It will fired "ended" event if not already stopped.
+* `track.stop()` will fire a proprietary "@stop" event if not already stopped.
+* `track.remoteStop()` emulates a stop generated remotely. It will fired a proprietary "@stop" event and "ended" event if not already stopped.
 * `track.remoteMute()` emulates a mute generated remotely. It will fired "mute" event if not already muted.
 * `track.remoteUnmute()` emulates a unmute generated remotely. It will fired "unmute" event if not already unmuted.
 

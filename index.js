@@ -121,6 +121,8 @@ class FakeMediaStreamTrack extends EventTarget
 			return;
 
 		this._readyState = 'ended';
+
+		this.dispatchEvent({ type: '@stop' });
 	}
 
 	remoteStop()
@@ -130,6 +132,7 @@ class FakeMediaStreamTrack extends EventTarget
 
 		this._readyState = 'ended';
 
+		this.dispatchEvent({ type: '@stop' });
 		this.dispatchEvent({ type: 'ended' });
 	}
 
@@ -159,6 +162,7 @@ defineEventAttribute(FakeMediaStreamTrack.prototype, 'ended');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'mute');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'unmute');
 defineEventAttribute(FakeMediaStreamTrack.prototype, '@enabledchange');
+defineEventAttribute(FakeMediaStreamTrack.prototype, '@stop');
 // NOTE: These are not implemented/dispatched.
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'isolationchange');
 defineEventAttribute(FakeMediaStreamTrack.prototype, 'overconstrained');
