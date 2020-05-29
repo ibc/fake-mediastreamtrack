@@ -40,6 +40,9 @@ class FakeMediaStreamTrack extends EventTarget
 		// Ready state ('live' or 'ended').
 		// @type {string}
 		this._readyState = 'live';
+		// MediaTrackConstraints.
+		// @type {MediaTrackConstraints}
+		this._constraints = {};
 		// Custom data.
 		// @type {any}
 		this._data = data || {};
@@ -123,6 +126,19 @@ class FakeMediaStreamTrack extends EventTarget
 		this._readyState = 'ended';
 
 		this.dispatchEvent({ type: '@stop' });
+	}
+
+	getConstraints()
+	{
+		return this._constraints;
+	}
+
+	applyConstraints(constraints)
+	{
+		if (this._readyState === 'ended')
+			return;
+
+		this._constraints = constraints;
 	}
 
 	remoteStop()

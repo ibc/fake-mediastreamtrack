@@ -39,6 +39,11 @@ console.log('track.readyState: %s', track.readyState);
 
 console.log('clonedTrack.readyState: %s', clonedTrack.readyState);
 // => 'clonedTrack.readyState: live'
+
+clonedTrack.applyConstraints({ frameRate: { max: 30, ideal: 20 } });
+
+console.log('clonedTrack.getConstraints(): %o', clonedTrack.getConstraints());
+// => clonedTrack.getConstraints(): { frameRate: { max: 30, ideal: 20 } }
 ```
 
 
