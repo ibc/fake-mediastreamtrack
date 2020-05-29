@@ -104,9 +104,7 @@ track.remoteStop();
 Some W3C [MediaStreamTrack](https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack) properties and methods are not implemented:
 
 * `track.getCapabilities()`
-* `track.getConstraints()`
 * `track.getSettings()`
-* `track.applyConstraints`
 * `track.onisolationchange`
 * `track.onoverconstrained`
 
