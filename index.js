@@ -1,5 +1,5 @@
 const { EventTarget, defineEventAttribute } = require('event-target-shim');
-const uuidv4 = require('uuid/v4');
+const uuidv4 = require('uuid').v4;
 
 class FakeMediaStreamTrack extends EventTarget
 {
