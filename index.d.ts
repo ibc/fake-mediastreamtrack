@@ -9,6 +9,7 @@ export class FakeMediaStreamTrack extends MediaStreamTrack {
 			label,
 			isolated,
 			muted,
+			readyState,
 			data
 		}:
 		{
@@ -17,6 +18,8 @@ export class FakeMediaStreamTrack extends MediaStreamTrack {
 			label?: string;
 			isolated?: boolean;
 			muted?: boolean;
+			readyState?: MediaTrackConstraints;
+			constraints?: any;
 			data?: any;
 		}
 	);

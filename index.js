@@ -10,6 +10,8 @@ class FakeMediaStreamTrack extends EventTarget
 			label,
 			isolated,
 			muted,
+			readyState,
+			constraints,
 			data
 		} = {}
 	)
@@ -39,10 +41,10 @@ class FakeMediaStreamTrack extends EventTarget
 		this._muted = muted || false;
 		// Ready state ('live' or 'ended').
 		// @type {string}
-		this._readyState = 'live';
+		this._readyState = readyState || 'live';
 		// MediaTrackConstraints.
 		// @type {MediaTrackConstraints}
-		this._constraints = {};
+		this._constraints = constraints || {};
 		// Custom data.
 		// @type {any}
 		this._data = data || {};
@@ -107,14 +109,15 @@ class FakeMediaStreamTrack extends EventTarget
 	{
 		return new FakeMediaStreamTrack(
 			{
-				id         : id || uuidv4(),
-				kind       : this._kind,
-				label      : this._label,
-				isolated   : this._isolated,
-				enabled    : this._enabled,
-				muted      : this._muted,
-				readyState : this._readyState,
-				data       : data !== undefined ? data : this._data
+				id          : id || uuidv4(),
+				kind        : this._kind,
+				label       : this._label,
+				isolated    : this._isolated,
+				enabled     : this._enabled,
+				muted       : this._muted,
+				readyState  : this._readyState,
+				constraints : this._constraints,
+				data        : data !== undefined ? data : this._data
 			});
 	}
 
