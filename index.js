@@ -19,7 +19,9 @@ class FakeMediaStreamTrack extends EventTarget
 		super();
 
 		if (!kind)
+		{
 			throw new TypeError('missing kind');
+		}
 
 		// Id.
 		// @type {string}
@@ -82,7 +84,9 @@ class FakeMediaStreamTrack extends EventTarget
 		this._enabled = enabled;
 
 		if (changed)
+		{
 			this.dispatchEvent({ type: '@enabledchange' });
+		}
 	}
 
 	get muted()
@@ -124,7 +128,9 @@ class FakeMediaStreamTrack extends EventTarget
 	stop()
 	{
 		if (this._readyState === 'ended')
+		{
 			return;
+		}
 
 		this._readyState = 'ended';
 
@@ -139,7 +145,9 @@ class FakeMediaStreamTrack extends EventTarget
 	applyConstraints(constraints)
 	{
 		if (this._readyState === 'ended')
+		{
 			return;
+		}
 
 		this._constraints = constraints;
 	}
@@ -147,7 +155,9 @@ class FakeMediaStreamTrack extends EventTarget
 	remoteStop()
 	{
 		if (this._readyState === 'ended')
+		{
 			return;
+		}
 
 		this._readyState = 'ended';
 
@@ -158,7 +168,9 @@ class FakeMediaStreamTrack extends EventTarget
 	remoteMute()
 	{
 		if (this._muted)
+		{
 			return;
+		}
 
 		this._muted = true;
 
@@ -168,7 +180,9 @@ class FakeMediaStreamTrack extends EventTarget
 	remoteUnmute()
 	{
 		if (!this._muted)
+		{
 			return;
+		}
 
 		this._muted = false;
 

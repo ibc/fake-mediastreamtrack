@@ -14,10 +14,10 @@
     "url": "https://github.com/ibc/fake-mediastreamtrack.git"
   },
   "dependencies": {
-    "event-target-shim": "^5.0.1",
-    "uuid": "^8.1.0"
+    "event-target-shim": "^6.0.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.1.0"
+    "eslint": "^8.46.0"
   }
 }
