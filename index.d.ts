@@ -18,8 +18,8 @@ export class FakeMediaStreamTrack extends MediaStreamTrack {
 			label?: string;
 			isolated?: boolean;
 			muted?: boolean;
-			readyState?: MediaTrackConstraints;
-			constraints?: any;
+			readyState?: 'live' | 'ended';
+			constraints?: MediaTrackConstraints;
 			data?: any;
 		}
 	);
