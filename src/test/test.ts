@@ -77,6 +77,33 @@ describe('FakeMediaStreamTrack', () => {
 		expect(clonedTrack2.appData).toEqual({ lalala: 'foobar' });
 	});
 
+	test('track.applyConstraints()', async () => {
+		const track = new FakeMediaStreamTrack({
+			kind: 'audio',
+			constraints: {
+				echoCancellation: true,
+				noiseSuppression: true,
+			},
+		});
+
+		expect(track.getConstraints()).toEqual({
+			echoCancellation: true,
+			noiseSuppression: true,
+		});
+
+		await track.applyConstraints({
+			echoCancellation: false,
+			noiseSuppression: true,
+			autoGainControl: true,
+		});
+
+		expect(track.getConstraints()).toEqual({
+			echoCancellation: false,
+			noiseSuppression: true,
+			autoGainControl: true,
+		});
+	});
+
 	describe('events', () => {
 		let track: FakeMediaStreamTrack;
 		let dispatchEventSpy: jest.SpyInstance<boolean, [event: Event]>;

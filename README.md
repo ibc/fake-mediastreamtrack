@@ -2,9 +2,9 @@
 
 Fake W3C [MediaStreamTrack](https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack) implementation. Suitable for for Node.js or testing.
 
-This library is intended for Node.js applications or libraries that depend on the `MediaStreamTrack` class. The exposed `FakeMediaStreamTrack` class does not internally manage any audio/video source.
+This library is intended for Node.js applications or libraries that depend on the `MediaStreamTrack` objects. The exposed `FakeMediaStreamTrack` class does not internally manage any audio/video source.
 
-This library provides TypeScript definitions. The `FakeMediaStreamTrack` class extends the `MediaStreamTrack` interface, so it can be safely used in any code requiring a `MediaStreamTrack` instance. In addition to that, `FakeMediaStreamTrack` also exposes custom methods (see below).
+This library provides TypeScript definitions. The `FakeMediaStreamTrack` class extends the `MediaStreamTrack` interface so it can be safely used in any code requiring a `MediaStreamTrack` instance. In addition to that, `FakeMediaStreamTrack` also exposes custom methods (see below).
 
 ## Install
 
@@ -26,21 +26,21 @@ const track = new FakeMediaStreamTrack({ kind: 'audio' });
 track.enabled = false;
 
 console.log(
-	'track.readyState: %s, track.enabled: %s',
+	'track.readyState: %o, track.enabled: %o',
 	track.readyState,
 	track.enabled
 );
-// => 'track.readyState: live, track.enabled: false'
+// => track.readyState: 'live', track.enabled: false
 
 const clonedTrack = track.clone();
 
 track.stop();
 
-console.log('track.readyState: %s', track.readyState);
-// => 'track.readyState: ended'
+console.log('track.readyState: %o', track.readyState);
+// => track.readyState: 'ended'
 
 console.log('clonedTrack.readyState: %s', clonedTrack.readyState);
-// => 'clonedTrack.readyState: live'
+// => clonedTrack.readyState: 'live'
 
 clonedTrack.applyConstraints({ frameRate: { max: 30, ideal: 20 } });
 
