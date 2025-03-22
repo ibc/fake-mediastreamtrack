@@ -22,9 +22,6 @@
 		"npm-scripts.mjs",
 		"lib"
 	],
-	"os": [
-		"!win32"
-	],
 	"engines": {
 		"node": ">=18"
 	},
