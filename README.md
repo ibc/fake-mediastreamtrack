@@ -128,15 +128,6 @@ track.remoteStop();
 // => track ended
 ```
 
-## Limitations
-
-Some W3C [MediaStreamTrack](https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack) properties and methods are not implemented:
-
-- `track.getCapabilities()`
-- `track.getSettings()`
-- `track.onisolationchange`
-- `track.onoverconstrained`
-
 ## Author
 
 - Iñaki Baz Castillo [[website](https://inakibaz.me)|[github](https://github.com/ibc/)]
