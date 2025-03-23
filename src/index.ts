@@ -244,6 +244,23 @@ export class FakeMediaStreamTrack<
 		super.addEventListener(type, listener, options);
 	}
 
+	override removeEventListener<K extends keyof FakeMediaStreamTrackEventMap>(
+		type: K,
+		listener: (
+			this: FakeMediaStreamTrack,
+			ev: FakeMediaStreamTrackEventMap[K]
+		) => any,
+		options?: boolean | EventListenerOptions
+	): void {
+		super.removeEventListener(type, listener, options);
+	}
+
+	override dispatchEvent<K extends keyof FakeMediaStreamTrackEventMap>(
+		event: FakeMediaStreamTrackEventMap[K]
+	): boolean {
+		return super.dispatchEvent(event);
+	}
+
 	/**
 	 * Changes `readyState` member to "ended" and fires a custom "stopped" event
 	 * (if not already stopped).
