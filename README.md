@@ -81,7 +81,7 @@ type FakeMediaStreamTrackOptions<
   		data: { foo: 123 },
   	});
   ```
-- Other parameters such as `enabled`, `muted` and `readyState` affect the initial state of track.
+- Other parameters such as `enabled`, `muted`, `readyState`, etc. affect the initial state of the track.
 - `capabilities`, `constraints` and `settings` parameters provide the track with values that can be later retrieved by using the corresponding standard methods such as `getCapabilities()`, `getConstraints()` and `getSettings()`.
 
 ### Custom API
