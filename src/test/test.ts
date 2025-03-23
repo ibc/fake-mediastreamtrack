@@ -117,14 +117,27 @@ describe('FakeMediaStreamTrack', () => {
 		});
 
 		test(`track.enabled setter triggers custom 'enabledchange' event`, () => {
+			let enabledchangeFired1 = false;
+			let enabledchangeFired2 = false;
+
+			track.onenabledchange = () => {
+				enabledchangeFired1 = true;
+			};
+
+			track.addEventListener('enabledchange', () => {
+				enabledchangeFired2 = true;
+			});
+
 			track.enabled = false;
 
 			expect(track.enabled).toBe(false);
+			expect(enabledchangeFired1).toBe(true);
+			expect(enabledchangeFired2).toBe(true);
 			expect(dispatchEventSpy).toHaveBeenCalledWith(
 				expect.objectContaining({ type: 'enabledchange' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			// It's already false so it won't emit the event again.
 			track.enabled = false;
@@ -133,7 +146,7 @@ describe('FakeMediaStreamTrack', () => {
 				expect.objectContaining({ type: 'enabledchange' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			track.enabled = true;
 
@@ -144,14 +157,27 @@ describe('FakeMediaStreamTrack', () => {
 		});
 
 		test(`track.stop() triggers custom 'stopped' event`, () => {
+			let stoppedFired1 = false;
+			let stoppedFired2 = false;
+
+			track.onstopped = () => {
+				stoppedFired1 = true;
+			};
+
+			track.addEventListener('stopped', () => {
+				stoppedFired2 = true;
+			});
+
 			track.stop();
 
 			expect(track.readyState).toBe('ended');
+			expect(stoppedFired1).toBe(true);
+			expect(stoppedFired2).toBe(true);
 			expect(dispatchEventSpy).toHaveBeenCalledWith(
 				expect.objectContaining({ type: 'stopped' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			// It's already stopped so it won't emit the event again.
 			track.stop();
@@ -162,9 +188,34 @@ describe('FakeMediaStreamTrack', () => {
 		});
 
 		test(`track.remoteStop() triggers custom 'stopped' event and 'ended' event`, () => {
+			let stoppedFired1 = false;
+			let stoppedFired2 = false;
+			let endedFired1 = false;
+			let endedFired2 = false;
+
+			track.onstopped = () => {
+				stoppedFired1 = true;
+			};
+
+			track.addEventListener('stopped', () => {
+				stoppedFired2 = true;
+			});
+
+			track.onended = () => {
+				endedFired1 = true;
+			};
+
+			track.addEventListener('ended', () => {
+				endedFired2 = true;
+			});
+
 			track.remoteStop();
 
 			expect(track.readyState).toBe('ended');
+			expect(stoppedFired1).toBe(true);
+			expect(stoppedFired2).toBe(true);
+			expect(endedFired1).toBe(true);
+			expect(endedFired2).toBe(true);
 			expect(dispatchEventSpy).toHaveBeenCalledWith(
 				expect.objectContaining({ type: 'stopped' })
 			);
@@ -172,7 +223,7 @@ describe('FakeMediaStreamTrack', () => {
 				expect.objectContaining({ type: 'ended' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			// It's already stopped so it won't emit the events again.
 			track.remoteStop();
@@ -186,14 +237,27 @@ describe('FakeMediaStreamTrack', () => {
 		});
 
 		test(`track.remoteMute() triggers 'mute' event`, () => {
+			let muteFired1 = false;
+			let muteFired2 = false;
+
+			track.onmute = () => {
+				muteFired1 = true;
+			};
+
+			track.addEventListener('mute', () => {
+				muteFired2 = true;
+			});
+
 			track.remoteMute();
 
 			expect(track.muted).toBe(true);
+			expect(muteFired1).toBe(true);
+			expect(muteFired2).toBe(true);
 			expect(dispatchEventSpy).toHaveBeenCalledWith(
 				expect.objectContaining({ type: 'mute' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			// It's already muted so it won't emit the event again.
 			track.remoteMute();
@@ -204,18 +268,32 @@ describe('FakeMediaStreamTrack', () => {
 		});
 
 		test(`track.remoteUnmute() triggers 'unmute' event`, () => {
+			let unmuteFired1 = false;
+			let unmuteFired2 = false;
+
+			track.onunmute = () => {
+				unmuteFired1 = true;
+			};
+
+			track.addEventListener('unmute', () => {
+				unmuteFired2 = true;
+			});
+
+			// We must mute the track first.
 			track.remoteMute();
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			track.remoteUnmute();
 
 			expect(track.muted).toBe(false);
+			expect(unmuteFired1).toBe(true);
+			expect(unmuteFired2).toBe(true);
 			expect(dispatchEventSpy).toHaveBeenCalledWith(
 				expect.objectContaining({ type: 'unmute' })
 			);
 
-			dispatchEventSpy.mockReset();
+			dispatchEventSpy.mockClear();
 
 			// It's already unmuted so it won't emit the event again.
 			track.remoteUnmute();

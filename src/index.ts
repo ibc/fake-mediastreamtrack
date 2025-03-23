@@ -41,9 +41,9 @@ export class FakeMediaStreamTrack<
 	#onunmute: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 	#onended: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 	// Custom events.
-	#onstopped: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 	#onenabledchange: ((this: FakeMediaStreamTrack, ev: Event) => any) | null =
 		null;
+	#onstopped: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 
 	constructor({
 		kind,
@@ -88,7 +88,7 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Changes |enabled| member value and emits custom "enabledchange" event.
+	 * Changes `enabled` member value and fires a custom "enabledchange" event.
 	 */
 	set enabled(enabled: boolean) {
 		const changed = this.#enabled !== enabled;
@@ -176,26 +176,6 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onstopped(): ((this: MediaStreamTrack, ev: Event) => any) | null {
-		return this.#onstopped as
-			| ((this: MediaStreamTrack, ev: Event) => any)
-			| null;
-	}
-
-	set onstopped(
-		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
-	) {
-		if (this.#onstopped) {
-			this.removeEventListener('stopped', this.#onstopped);
-		}
-
-		this.#onstopped = handler;
-
-		if (handler) {
-			this.addEventListener('stopped', handler);
-		}
-	}
-
 	get onenabledchange(): ((this: MediaStreamTrack, ev: Event) => any) | null {
 		return this.#onenabledchange as
 			| ((this: MediaStreamTrack, ev: Event) => any)
@@ -216,9 +196,29 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
+	get onstopped(): ((this: MediaStreamTrack, ev: Event) => any) | null {
+		return this.#onstopped as
+			| ((this: MediaStreamTrack, ev: Event) => any)
+			| null;
+	}
+
+	set onstopped(
+		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
+	) {
+		if (this.#onstopped) {
+			this.removeEventListener('stopped', this.#onstopped);
+		}
+
+		this.#onstopped = handler;
+
+		if (handler) {
+			this.addEventListener('stopped', handler);
+		}
+	}
+
 	/**
-	 * Changes |readyState| member to 'ended' and emits custom "stopped" event (if
-	 * not already stopped).
+	 * Changes `readyState` member to "ended" and fires a custom "stopped" event
+	 * (if not already stopped).
 	 */
 	stop(): void {
 		if (this.#readyState === 'ended') {
@@ -231,7 +231,7 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Clones current track into another FakeMediaStreamTrack. |id| and |appData|
+	 * Clones current track into another FakeMediaStreamTrack. `id` and `appData`
 	 * can be optionally given.
 	 */
 	// @ts-expect-error --- We don't want to return a MediaStreamTrack but a
@@ -282,8 +282,8 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Emulates a stop generated remotely. It emits custom "stopped" event and
-	 * "ended" event (if not already stopped).
+	 * Simulates a remotely triggered stop. It fires a custom "stopped" event and
+	 * the standard "ended" event (if the track was not already stopped).
 	 */
 	remoteStop(): void {
 		if (this.#readyState === 'ended') {
@@ -297,8 +297,8 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Emulates a mute generated remotely. It emits "mute" event if not already
-	 * muted.
+	 * Simulates a remotely triggered mute. It fires a "mute" event (if the track
+	 * was not already muted).
 	 */
 	remoteMute(): void {
 		if (this.#muted) {
@@ -311,8 +311,8 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Emulates an unmute generated remotely. It emits "unmute" event if not
-	 * already unmuted.
+	 * Simulates a remotely triggered unmute. It fires an "unmute" event (if the
+	 * track was muted).
 	 */
 	remoteUnmute(): void {
 		if (!this.#muted) {

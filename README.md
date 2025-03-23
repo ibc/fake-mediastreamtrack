@@ -30,19 +30,19 @@ console.log(
 	track.readyState,
 	track.enabled
 );
-// => track.readyState: 'live', track.enabled: false
+// => track.readyState: "live", track.enabled: false
 
 const clonedTrack = track.clone();
 
 track.stop();
 
 console.log('track.readyState: %o', track.readyState);
-// => track.readyState: 'ended'
+// => track.readyState: "ended"
 
 console.log('clonedTrack.readyState: %s', clonedTrack.readyState);
-// => clonedTrack.readyState: 'live'
+// => clonedTrack.readyState: "live"
 
-clonedTrack.applyConstraints({ frameRate: { max: 30, ideal: 20 } });
+await clonedTrack.applyConstraints({ frameRate: { max: 30, ideal: 20 } });
 
 console.log('clonedTrack.getConstraints(): %o', clonedTrack.getConstraints());
 // => clonedTrack.getConstraints(): { frameRate: { max: 30, ideal: 20 } }
@@ -52,57 +52,79 @@ console.log('clonedTrack.getConstraints(): %o', clonedTrack.getConstraints());
 
 ### Constructor
 
-The `FakeMediaStreamTrack` class constructor accepts an object with the following fields.
+The `FakeMediaStreamTrack` class constructor requires an object with settings as follows:
 
-```js
-const track = new FakeMediaStreamTrack({
-	kind,
-	id,
-	label,
-	muted,
-	data,
-});
+```ts
+type FakeMediaStreamTrackOptions<
+	FakeMediaStreamTrackAppData extends AppData = AppData,
+> = {
+	kind: string;
+	id?: string;
+	label?: string;
+	enabled?: boolean;
+	muted?: boolean;
+	readyState?: MediaStreamTrackState;
+	capabilities?: MediaTrackCapabilities;
+	constraints?: MediaTrackConstraints;
+	settings?: MediaTrackSettings;
+	appData?: FakeMediaStreamTrackAppData;
+};
 ```
 
-- `kind` (string, mandatory): Typically "audio" or "video".
-- `id` (string, optional): Track unique identificator. If not given, a random one is generated.
-- `label` (string, optional): Track label. Defaults to empty string.
-- `muted` (boolean, optional): Whether this track belongs to a muted source. Defaults to `false`.
-- `data` (object, options): An object with custom application data.
+- `kind` is typically "audio" or "video" and is the only mandatory parameter.
+- `appData` is an object with custom application data and it can be typed by setting a type argument when declaring a `FakeMediaStreamTrack` variable:
+  ```ts
+  const videoTrack: FakeMediaStreamTrack<{ foo: number }> =
+  	new FakeMediaStreamTrack({
+  		kind: 'video',
+  		appData: { foo: 123 },
+  	});
+  ```
+- Other parameters such as `enabled`, `muted` and `readyState` affect the initial state of track.
+- `capabilities`, `constraints` and `settings` parameters provide the track with values that can be later retrieved by using the corresponding standard methods such as `getCapabilities()`, `getConstraints()` and `getSettings()`.
 
-### Custom setters and getters
+### Custom API
 
-- `track.data` getter returns custom application `data` object. The app can write into it at any time.
-- `track.enabled = flag` setter fires a proprietary "@enabledchange" event if the `enabled` property value changed.
+- `track.appData` getter returns custom application data object. It can also be entirely replaced by using it as a setter (`track.appData = { xxx }`).
+- `track.enabled = flag` setter fires a custom "enabledchange" event (if the `enabled` value of the track effectively changed).
+- `track.stop()` sets the track `readyState` to "ended" and fires a custom "stopped" event.
+- `track.clone()` creates a cloned track with a random `id` (unless given in method parameters) and cloned state. `appData` can also be given as a parameter in case we don't want to clone the `appData` of the original track. The signature of the method also accepts a TypeScript argument defining the type of the `appData` parameter:
+  ```ts
+  const clonedTrack = track.clone<{ lalala: string }>({
+  	id: '4a552a2c-8568-4d01-906f-6800770846c3',
+  	appData: { lalala: 'foobar' },
+  });
+  ```
+- `track.remoteStop()` simulates a remotely triggered stop. It fires a custom "stopped" event and the standard "ended" event (if the track was not already stopped).
+- `track.remoteMute()` simulates a remotely triggered mute. It fires a "mute" event (if the track was not already muted).
+- `track.remoteUnmute()` simulates a remotely triggered unmute. It fires an "unmute" event (if the track was muted).
 
-### Custom methods and additions
-
-- `track.stop()` will fire a custom "@stop" event if not already stopped.
-- `track.remoteStop()` emulates a stop generated remotely. It will fired a custom "@stop" event and "ended" event if not already stopped.
-- `track.remoteMute()` emulates a mute generated remotely. It will fired "mute" event if not already muted.
-- `track.remoteUnmute()` emulates a unmute generated remotely. It will fired "unmute" event if not already unmuted.
-
-```js
+```ts
 import { FakeMediaStreamTrack } from 'fake-mediastreamtrack';
 
 const track = new FakeMediaStreamTrack({ kind: 'video' });
 
-track.onended = () => console.log('track ended (1)');
-track.addEventListener('ended', () => console.log('track ended (2)'));
+track.onended = () => console.log('track ended');
 
-track.addEventListener('@enabledchange', () => {
-	console.log('track.enabled changed:', track.enabled);
+track.addEventListener('stopped', () => {
+	console.log('track stopped');
+});
+
+track.addEventListener('enabledchange', () => {
+	console.log('track.enabled changed to %s', track.enabled);
 });
 
 track.enabled = false;
-track.enabled = false;
-track.enabled = true;
-track.remoteStop();
+// => track enabled changed to false
 
-// => track enabled changed: false
-// => track enabled changed: true
-// => track ended (1)
-// => track ended (2)
+track.enabled = false;
+
+track.enabled = true;
+// => track enabled changed to true
+
+track.remoteStop();
+// => track stopped
+// => track ended
 ```
 
 ## Limitations
