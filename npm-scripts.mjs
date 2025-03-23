@@ -51,13 +51,13 @@ async function run() {
 		//
 		// So here we compile TypeScript to JavaScript.
 		case 'prepare': {
-			buildTypescript();
+			buildTypescript({ force: false });
 
 			break;
 		}
 
 		case 'typescript:build': {
-			buildTypescript();
+			buildTypescript({ force: true });
 
 			break;
 		}
@@ -128,7 +128,11 @@ function deleteLib() {
 	fs.rmSync('lib', { recursive: true, force: true });
 }
 
-function buildTypescript() {
+function buildTypescript({ force = false } = { force: false }) {
+	if (!force && fs.existsSync('node/lib')) {
+		return;
+	}
+
 	logInfo('buildTypescript()');
 
 	deleteLib();
