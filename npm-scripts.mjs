@@ -128,7 +128,7 @@ function deleteLib() {
 	fs.rmSync('lib', { recursive: true, force: true });
 }
 
-function buildTypescript({ force = false } = { force: false }) {
+function buildTypescript({ force }) {
 	if (!force && fs.existsSync('node/lib')) {
 		return;
 	}
