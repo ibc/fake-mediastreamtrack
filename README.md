@@ -61,23 +61,24 @@ type FakeMediaStreamTrackOptions<
 	kind: string;
 	id?: string;
 	label?: string;
+	contentHint?: string;
 	enabled?: boolean;
 	muted?: boolean;
 	readyState?: MediaStreamTrackState;
 	capabilities?: MediaTrackCapabilities;
 	constraints?: MediaTrackConstraints;
 	settings?: MediaTrackSettings;
-	appData?: FakeMediaStreamTrackAppData;
+	data?: FakeMediaStreamTrackAppData;
 };
 ```
 
 - `kind` is typically "audio" or "video" and is the only mandatory parameter.
-- `appData` is an object with custom application data and it can be typed by setting a type argument when declaring a `FakeMediaStreamTrack` variable:
+- `data` is an object with custom application data and it can be typed by setting a type argument when declaring a `FakeMediaStreamTrack` variable:
   ```ts
   const videoTrack: FakeMediaStreamTrack<{ foo: number }> =
   	new FakeMediaStreamTrack({
   		kind: 'video',
-  		appData: { foo: 123 },
+  		data: { foo: 123 },
   	});
   ```
 - Other parameters such as `enabled`, `muted` and `readyState` affect the initial state of track.
@@ -85,14 +86,14 @@ type FakeMediaStreamTrackOptions<
 
 ### Custom API
 
-- `track.appData` getter returns custom application data object. It can also be entirely replaced by using it as a setter (`track.appData = { xxx }`).
+- `track.data` getter returns custom application data object. It can also be entirely replaced by using it as a setter (`track.data = { xxx }`).
 - `track.enabled = flag` setter fires a custom "enabledchange" event (if the `enabled` value of the track effectively changed).
 - `track.stop()` sets the track `readyState` to "ended" and fires a custom "stopped" event.
-- `track.clone()` creates a cloned track with a random `id` (unless given in method parameters) and cloned state. `appData` can also be given as a parameter in case we don't want to clone the `appData` of the original track. The signature of the method also accepts a TypeScript argument defining the type of the `appData` parameter:
+- `track.clone()` creates a cloned track with a random `id` (unless given in method parameters) and cloned state. `data` can also be given as a parameter in case we don't want to clone the `data` of the original track. The signature of the method also accepts a TypeScript argument defining the type of the `data` parameter:
   ```ts
   const clonedTrack = track.clone<{ lalala: string }>({
   	id: '4a552a2c-8568-4d01-906f-6800770846c3',
-  	appData: { lalala: 'foobar' },
+  	data: { lalala: 'foobar' },
   });
   ```
 - `track.remoteStop()` simulates a remotely triggered stop. It fires a custom "stopped" event and the standard "ended" event (if the track was not already stopped).

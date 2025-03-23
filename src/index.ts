@@ -11,14 +11,20 @@ export type FakeMediaStreamTrackOptions<
 	kind: string;
 	id?: string;
 	label?: string;
+	contentHint?: string;
 	enabled?: boolean;
 	muted?: boolean;
 	readyState?: MediaStreamTrackState;
 	capabilities?: MediaTrackCapabilities;
 	constraints?: MediaTrackConstraints;
 	settings?: MediaTrackSettings;
-	appData?: FakeMediaStreamTrackAppData;
+	data?: FakeMediaStreamTrackAppData;
 };
+
+export interface FakeMediaStreamTrackEventMap extends MediaStreamTrackEventMap {
+	stopped: Event;
+	enabledchange: Event;
+}
 
 export class FakeMediaStreamTrack<
 		FakeMediaStreamTrackAppData extends AppData = AppData,
@@ -29,13 +35,14 @@ export class FakeMediaStreamTrack<
 	readonly #id: string;
 	readonly #kind: string;
 	readonly #label: string;
+	#readyState: MediaStreamTrackState;
 	#enabled: boolean;
 	#muted: boolean;
-	#readyState: MediaStreamTrackState;
+	#contentHint: string;
 	#capabilities: MediaTrackCapabilities;
 	#constraints: MediaTrackConstraints;
 	#settings: MediaTrackSettings;
-	#appData: FakeMediaStreamTrackAppData;
+	#data: FakeMediaStreamTrackAppData;
 	// Events.
 	#onmute: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 	#onunmute: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
@@ -49,26 +56,28 @@ export class FakeMediaStreamTrack<
 		kind,
 		id,
 		label,
+		contentHint,
 		enabled,
 		muted,
 		readyState,
 		capabilities,
 		constraints,
 		settings,
-		appData,
+		data,
 	}: FakeMediaStreamTrackOptions<FakeMediaStreamTrackAppData>) {
 		super();
 
 		this.#id = id ?? uuidv4();
 		this.#kind = kind;
 		this.#label = label ?? '';
+		this.#contentHint = contentHint ?? '';
 		this.#enabled = enabled ?? true;
 		this.#muted = muted ?? false;
 		this.#readyState = readyState ?? 'live';
 		this.#capabilities = capabilities ?? {};
 		this.#constraints = constraints ?? {};
 		this.#settings = settings ?? {};
-		this.#appData = appData ?? ({} as FakeMediaStreamTrackAppData);
+		this.#data = data ?? ({} as FakeMediaStreamTrackAppData);
 	}
 
 	get id(): string {
@@ -81,6 +90,14 @@ export class FakeMediaStreamTrack<
 
 	get label(): string {
 		return this.#label;
+	}
+
+	get contentHint(): string {
+		return this.#contentHint;
+	}
+
+	set contentHint(contentHint: string) {
+		this.#contentHint = contentHint;
 	}
 
 	get enabled(): boolean {
@@ -111,15 +128,15 @@ export class FakeMediaStreamTrack<
 	/**
 	 * Application custom data getter.
 	 */
-	get appData(): FakeMediaStreamTrackAppData {
-		return this.#appData;
+	get data(): FakeMediaStreamTrackAppData {
+		return this.#data;
 	}
 
 	/**
 	 * Application custom data setter.
 	 */
-	set appData(appData: FakeMediaStreamTrackAppData) {
-		this.#appData = appData;
+	set data(data: FakeMediaStreamTrackAppData) {
+		this.#data = data;
 	}
 
 	get onmute(): ((this: MediaStreamTrack, ev: Event) => any) | null {
@@ -216,6 +233,17 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
+	override addEventListener<K extends keyof FakeMediaStreamTrackEventMap>(
+		type: K,
+		listener: (
+			this: FakeMediaStreamTrack,
+			ev: FakeMediaStreamTrackEventMap[K]
+		) => any,
+		options?: boolean | AddEventListenerOptions
+	): void {
+		super.addEventListener(type, listener, options);
+	}
+
 	/**
 	 * Changes `readyState` member to "ended" and fires a custom "stopped" event
 	 * (if not already stopped).
@@ -231,32 +259,31 @@ export class FakeMediaStreamTrack<
 	}
 
 	/**
-	 * Clones current track into another FakeMediaStreamTrack. `id` and `appData`
+	 * Clones current track into another FakeMediaStreamTrack. `id` and `data`
 	 * can be optionally given.
 	 */
-	// @ts-expect-error --- We don't want to return a MediaStreamTrack but a
-	// FakeMediaStreamTrack.
 	clone<
 		ClonedFakeMediaStreamTrackAppData extends
 			AppData = FakeMediaStreamTrackAppData,
 	>({
 		id,
-		appData,
+		data,
 	}: {
 		id?: string;
-		appData?: ClonedFakeMediaStreamTrackAppData;
+		data?: ClonedFakeMediaStreamTrackAppData;
 	} = {}): FakeMediaStreamTrack {
 		return new FakeMediaStreamTrack({
 			id: id ?? uuidv4(),
 			kind: this.#kind,
 			label: this.#label,
+			contentHint: this.#contentHint,
 			enabled: this.#enabled,
 			muted: this.#muted,
 			readyState: this.#readyState,
 			capabilities: clone(this.#capabilities),
 			constraints: clone(this.#constraints),
 			settings: clone(this.#settings),
-			appData: appData ?? clone(this.#appData),
+			data: data ?? clone(this.#data),
 		});
 	}
 

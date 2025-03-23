@@ -16,7 +16,7 @@ describe('FakeMediaStreamTrack', () => {
 				id: 'c9c15f1e-9ae3-4770-9d95-2ba6992bddc3',
 				enabled: false,
 				muted: true,
-				appData: { foo: 123 },
+				data: { foo: 123 },
 			});
 
 		expect(audioTrack.id).toEqual(expect.stringMatching(UuidV4Regex));
@@ -25,7 +25,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(audioTrack.enabled).toBe(true);
 		expect(audioTrack.muted).toBe(false);
 		expect(audioTrack.readyState).toBe('live');
-		expect(audioTrack.appData).toEqual({});
+		expect(audioTrack.data).toEqual({});
 
 		expect(videoTrack.id).toEqual(expect.stringMatching(UuidV4Regex));
 		expect(videoTrack.id).toBe('c9c15f1e-9ae3-4770-9d95-2ba6992bddc3');
@@ -34,7 +34,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(videoTrack.enabled).toBe(false);
 		expect(videoTrack.muted).toBe(true);
 		expect(videoTrack.readyState).toBe('live');
-		expect(videoTrack.appData).toEqual({ foo: 123 });
+		expect(videoTrack.data).toEqual({ foo: 123 });
 	});
 
 	test('track.clone()', () => {
@@ -43,7 +43,7 @@ describe('FakeMediaStreamTrack', () => {
 				kind: 'video',
 				id: 'c9c15f1e-9ae3-4770-9d95-2ba6992bddc3',
 				muted: true,
-				appData: { foo: 123, bar: 'baz' },
+				data: { foo: 123, bar: 'baz' },
 			});
 
 		const clonedTrack1 = track.clone();
@@ -55,17 +55,17 @@ describe('FakeMediaStreamTrack', () => {
 		expect(clonedTrack1.enabled).toBe(true);
 		expect(clonedTrack1.muted).toBe(true);
 		expect(clonedTrack1.readyState).toBe('live');
-		expect(clonedTrack1.appData).toEqual({ foo: 123, bar: 'baz' });
+		expect(clonedTrack1.data).toEqual({ foo: 123, bar: 'baz' });
 
-		// Assert that cloned appData is a different object.
-		clonedTrack1.appData['foo'] = 666;
+		// Assert that cloned data is a different object.
+		clonedTrack1.data['foo'] = 666;
 
-		expect(clonedTrack1.appData['foo']).toBe(666);
-		expect(track.appData['foo']).toBe(123);
+		expect(clonedTrack1.data['foo']).toBe(666);
+		expect(track.data['foo']).toBe(123);
 
 		const clonedTrack2 = track.clone<{ lalala: string }>({
 			id: '4a552a2c-8568-4d01-906f-6800770846c3',
-			appData: { lalala: 'foobar' },
+			data: { lalala: 'foobar' },
 		});
 
 		expect(clonedTrack2.id).toBe('4a552a2c-8568-4d01-906f-6800770846c3');
@@ -74,7 +74,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(clonedTrack2.enabled).toBe(true);
 		expect(clonedTrack2.muted).toBe(true);
 		expect(clonedTrack2.readyState).toBe('live');
-		expect(clonedTrack2.appData).toEqual({ lalala: 'foobar' });
+		expect(clonedTrack2.data).toEqual({ lalala: 'foobar' });
 	});
 
 	test('track.applyConstraints()', async () => {
