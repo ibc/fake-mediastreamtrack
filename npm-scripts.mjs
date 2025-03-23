@@ -188,7 +188,7 @@ function checkRelease() {
 	logInfo('checkRelease()');
 
 	installDeps();
-	buildTypescript();
+	buildTypescript({ force: true });
 	lint();
 	test();
 }
