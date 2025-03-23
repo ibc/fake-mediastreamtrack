@@ -22,6 +22,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(audioTrack.id).toEqual(expect.stringMatching(UuidV4Regex));
 		expect(audioTrack.kind).toBe('audio');
 		expect(audioTrack.label).toBe('mic');
+		expect(audioTrack.contentHint).toBe('');
 		expect(audioTrack.enabled).toBe(true);
 		expect(audioTrack.muted).toBe(false);
 		expect(audioTrack.readyState).toBe('live');
@@ -31,6 +32,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(videoTrack.id).toBe('c9c15f1e-9ae3-4770-9d95-2ba6992bddc3');
 		expect(videoTrack.kind).toBe('video');
 		expect(videoTrack.label).toBe('');
+		expect(videoTrack.contentHint).toBe('');
 		expect(videoTrack.enabled).toBe(false);
 		expect(videoTrack.muted).toBe(true);
 		expect(videoTrack.readyState).toBe('live');
@@ -42,6 +44,7 @@ describe('FakeMediaStreamTrack', () => {
 			new FakeMediaStreamTrack({
 				kind: 'video',
 				id: 'c9c15f1e-9ae3-4770-9d95-2ba6992bddc3',
+				contentHint: 'motion',
 				muted: true,
 				data: { foo: 123, bar: 'baz' },
 			});
@@ -52,6 +55,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(clonedTrack1.id).toEqual(expect.stringMatching(UuidV4Regex));
 		expect(clonedTrack1.kind).toBe('video');
 		expect(clonedTrack1.label).toBe('');
+		expect(clonedTrack1.contentHint).toBe('motion');
 		expect(clonedTrack1.enabled).toBe(true);
 		expect(clonedTrack1.muted).toBe(true);
 		expect(clonedTrack1.readyState).toBe('live');
@@ -71,6 +75,7 @@ describe('FakeMediaStreamTrack', () => {
 		expect(clonedTrack2.id).toBe('4a552a2c-8568-4d01-906f-6800770846c3');
 		expect(clonedTrack2.kind).toBe('video');
 		expect(clonedTrack2.label).toBe('');
+		expect(clonedTrack1.contentHint).toBe('motion');
 		expect(clonedTrack2.enabled).toBe(true);
 		expect(clonedTrack2.muted).toBe(true);
 		expect(clonedTrack2.readyState).toBe('live');
