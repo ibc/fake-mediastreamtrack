@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { FakeEventTarget, FakeListenerOptions } from './FakeEventTarget';
 import { clone } from './utils';
 
 export type AppData = {
@@ -29,7 +30,7 @@ export interface FakeMediaStreamTrackEventMap extends MediaStreamTrackEventMap {
 export class FakeMediaStreamTrack<
 		FakeMediaStreamTrackAppData extends AppData = AppData,
 	>
-	extends EventTarget
+	extends FakeEventTarget
 	implements MediaStreamTrack
 {
 	readonly #id: string;
@@ -239,7 +240,7 @@ export class FakeMediaStreamTrack<
 			this: FakeMediaStreamTrack,
 			ev: FakeMediaStreamTrackEventMap[K]
 		) => any,
-		options?: boolean | AddEventListenerOptions
+		options?: FakeListenerOptions
 	): void {
 		super.addEventListener(type, listener, options);
 	}
@@ -249,10 +250,9 @@ export class FakeMediaStreamTrack<
 		listener: (
 			this: FakeMediaStreamTrack,
 			ev: FakeMediaStreamTrackEventMap[K]
-		) => any,
-		options?: boolean | EventListenerOptions
+		) => any
 	): void {
-		super.removeEventListener(type, listener, options);
+		super.removeEventListener(type, listener);
 	}
 
 	/**
