@@ -116,12 +116,12 @@ track.addEventListener('enabledchange', () => {
 });
 
 track.enabled = false;
-// => track enabled changed to false
+// => track.enabled changed to false
 
 track.enabled = false;
 
 track.enabled = true;
-// => track enabled changed to true
+// => track.enabled changed to true
 
 track.remoteStop();
 // => track stopped
