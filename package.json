@@ -1,6 +1,6 @@
 {
 	"name": "fake-mediastreamtrack",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"description": "Fake W3C MediaStreamTrack implementation",
 	"author": "Iñaki Baz Castillo <ibc@aliax.net> (https://inakibaz.me)",
 	"license": "ISC",
