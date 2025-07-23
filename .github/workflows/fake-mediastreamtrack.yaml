@@ -20,15 +20,19 @@ jobs:
           - os: ubuntu-22.04
             node: 18
           - os: ubuntu-24.04
-            node: 22
+            node: 20
+          - os: ubuntu-24.04
+            node: 24
+          - os: macos-13
+            node: 18
           - os: macos-14
-            node: 18
+            node: 22
           - os: macos-15
-            node: 22
+            node: 24
           - os: windows-2022
-            node: 18
-          - os: windows-2025
             node: 22
+          - os: windows-2025
+            node: 24
 
     runs-on: ${{ matrix.ci.os }}
 
@@ -50,8 +54,9 @@ jobs:
           restore-keys: |
             ${{ matrix.ci.os }}-node-
 
-      - name: npm ci
-        run: npm ci
+      # NOTE: Add --force since some dev dependencies require Node >= 18.
+      - name: npm ci --force --foreground-scripts
+        run: npm ci --force --foreground-scripts
 
       - name: npm run lint
         run: npm run lint
