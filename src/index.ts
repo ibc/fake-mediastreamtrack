@@ -294,7 +294,7 @@ export class FakeMediaStreamTrack<
 			capabilities: clone(this.#capabilities),
 			constraints: clone(this.#constraints),
 			settings: clone(this.#settings),
-			data: data ?? clone(this.#data),
+			data: data! ?? clone(this.#data),
 		});
 	}
 
