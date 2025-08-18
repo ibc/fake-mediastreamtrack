@@ -200,7 +200,7 @@ function release() {
 	executeCmd(`git tag -a ${PKG.version} -m '${PKG.version}'`);
 	executeCmd(`git push origin ${RELEASE_BRANCH}`);
 	executeCmd(`git push origin '${PKG.version}'`);
-	executeCmd('npm publish');
+	executeInteractiveCmd('npm publish');
 }
 
 function executeCmd(command) {
