@@ -1,4 +1,5 @@
 import {
+	FakeEventListenerOrEventListenerObject,
 	FakeEventListener,
 	FakeAddEventListenerOptions,
 	FakeEventListenerOptions,
@@ -11,12 +12,12 @@ interface FakeListenerEntry {
 }
 
 export class FakeEventTarget implements EventTarget {
-	private listeners: Record<string, FakeListenerEntry[]> = {};
+	private readonly listeners: Record<string, FakeListenerEntry[]> = {};
 
 	addEventListener(
 		type: string,
-		callback: FakeEventListener,
-		options?: boolean | FakeAddEventListenerOptions
+		callback: FakeEventListenerOrEventListenerObject | null,
+		options?: FakeAddEventListenerOptions | boolean
 	): void {
 		if (!callback) {
 			return;
@@ -25,14 +26,16 @@ export class FakeEventTarget implements EventTarget {
 		this.listeners[type] ??= [];
 
 		this.listeners[type].push({
-			callback,
+			callback:
+				// eslint-disable-next-line @typescript-eslint/unbound-method
+				typeof callback === 'function' ? callback : callback.handleEvent,
 			once: typeof options === 'object' && options.once === true,
 		});
 	}
 
 	removeEventListener(
 		type: string,
-		callback: FakeEventListener,
+		callback: FakeEventListenerOrEventListenerObject | null,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		options?: boolean | FakeEventListenerOptions
 	): void {
@@ -40,8 +43,15 @@ export class FakeEventTarget implements EventTarget {
 			return;
 		}
 
+		if (!callback) {
+			return;
+		}
+
 		this.listeners[type] = this.listeners[type].filter(
-			listener => listener.callback !== callback
+			listener =>
+				listener.callback !==
+				// eslint-disable-next-line @typescript-eslint/unbound-method
+				(typeof callback === 'function' ? callback : callback.handleEvent)
 		);
 	}
 

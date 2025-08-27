@@ -70,7 +70,7 @@ const config = tsEslint.config(
 			'no-new-wrappers': 2,
 			'no-obj-calls': 2,
 			'no-proto': 2,
-			'no-prototype-builtins': 0,
+			'no-prototype-builtins': 2,
 			'no-redeclare': 2,
 			'no-regex-spaces': 2,
 			'no-restricted-imports': 2,
@@ -133,6 +133,7 @@ const config = tsEslint.config(
 				2,
 				'type-annotation',
 			],
+			'@typescript-eslint/prefer-function-type': 0,
 			'@typescript-eslint/dot-notation': 0,
 			'@typescript-eslint/no-empty-function': 0,
 			'@typescript-eslint/no-inferrable-types': 0,
@@ -147,8 +148,6 @@ const config = tsEslint.config(
 			],
 			// We want to use `type` instead of `interface`.
 			'@typescript-eslint/consistent-type-definitions': 0,
-			// Sorry, we need many `any` usage.
-			'@typescript-eslint/no-explicit-any': 0,
 			'@typescript-eslint/consistent-indexed-object-style': 0,
 			'@typescript-eslint/explicit-function-return-type': [
 				2,

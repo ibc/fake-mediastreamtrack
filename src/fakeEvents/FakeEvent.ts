@@ -1,3 +1,6 @@
+// NOTE: Do not use our FakeEventTarget type inside this class, otherwise TS
+// will complain because "Property 'listeners' is missing in type 'EventTarget'
+// but required in type 'FakeEventTarget'".
 export class FakeEvent implements Event {
 	/**
 	 * Constants.
@@ -14,16 +17,16 @@ export class FakeEvent implements Event {
 	readonly cancelable: boolean;
 	defaultPrevented: boolean = false;
 	readonly composed: boolean = false;
-	readonly currentTarget: any = undefined;
+	readonly currentTarget: EventTarget | null = null;
 	// Not implemented.
 	readonly eventPhase: number = this.NONE;
 	readonly isTrusted: boolean = true;
-	readonly target: any = undefined;
+	readonly target: EventTarget | null = null;
 	readonly timeStamp: number = 0;
 	// Deprecated.
 	readonly cancelBubble: boolean = false;
 	readonly returnValue: boolean = true;
-	readonly srcElement: any = undefined;
+	readonly srcElement: EventTarget | null = null;
 
 	constructor(
 		type: string,
@@ -53,7 +56,7 @@ export class FakeEvent implements Event {
 	/**
 	 * Not implemented.
 	 */
-	composedPath(): any[] {
+	composedPath(): EventTarget[] {
 		return [];
 	}
 

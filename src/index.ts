@@ -50,15 +50,13 @@ export class FakeMediaStreamTrack<
 	#settings: MediaTrackSettings;
 	#data: FakeMediaStreamTrackAppData;
 	// Events.
-	#onmute: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
-	#onunmute: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
-	#onended: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
+	#onmute: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null = null;
+	#onunmute: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null = null;
+	#onended: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null = null;
 	// Custom events.
-	#onenabledchange:
-		| ((this: FakeMediaStreamTrack, ev: FakeEvent) => any)
-		| null = null;
-	#onstopped: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null =
+	#onenabledchange: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null =
 		null;
+	#onstopped: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null = null;
 
 	constructor({
 		kind,
@@ -147,14 +145,12 @@ export class FakeMediaStreamTrack<
 		this.#data = data;
 	}
 
-	get onmute(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
-		return this.#onmute as
-			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
-			| null;
+	get onmute(): ((this: MediaStreamTrack, ev: FakeEvent) => void) | null {
+		return this.#onmute;
 	}
 
 	set onmute(
-		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+		handler: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null
 	) {
 		if (this.#onmute) {
 			this.removeEventListener('mute', this.#onmute);
@@ -167,14 +163,12 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onunmute(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
-		return this.#onunmute as
-			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
-			| null;
+	get onunmute(): ((this: MediaStreamTrack, ev: FakeEvent) => void) | null {
+		return this.#onunmute;
 	}
 
 	set onunmute(
-		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+		handler: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null
 	) {
 		if (this.#onunmute) {
 			this.removeEventListener('unmute', this.#onunmute);
@@ -187,14 +181,12 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onended(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
-		return this.#onended as
-			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
-			| null;
+	get onended(): ((this: MediaStreamTrack, ev: FakeEvent) => void) | null {
+		return this.#onended;
 	}
 
 	set onended(
-		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+		handler: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null
 	) {
 		if (this.#onended) {
 			this.removeEventListener('ended', this.#onended);
@@ -208,15 +200,13 @@ export class FakeMediaStreamTrack<
 	}
 
 	get onenabledchange():
-		| ((this: MediaStreamTrack, ev: FakeEvent) => any)
+		| ((this: MediaStreamTrack, ev: FakeEvent) => void)
 		| null {
-		return this.#onenabledchange as
-			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
-			| null;
+		return this.#onenabledchange;
 	}
 
 	set onenabledchange(
-		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+		handler: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null
 	) {
 		if (this.#onenabledchange) {
 			this.removeEventListener('enabledchange', this.#onenabledchange);
@@ -229,14 +219,12 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onstopped(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
-		return this.#onstopped as
-			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
-			| null;
+	get onstopped(): ((this: MediaStreamTrack, ev: FakeEvent) => void) | null {
+		return this.#onstopped;
 	}
 
 	set onstopped(
-		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+		handler: ((this: MediaStreamTrack, ev: FakeEvent) => void) | null
 	) {
 		if (this.#onstopped) {
 			this.removeEventListener('stopped', this.#onstopped);
@@ -252,9 +240,9 @@ export class FakeMediaStreamTrack<
 	override addEventListener<K extends keyof FakeMediaStreamTrackEventMap>(
 		type: K,
 		listener: (
-			this: FakeMediaStreamTrack,
+			this: FakeMediaStreamTrack<AppData>,
 			ev: FakeMediaStreamTrackEventMap[K]
-		) => any,
+		) => void,
 		options?: boolean | FakeAddEventListenerOptions
 	): void {
 		super.addEventListener(type, listener, options);
@@ -263,9 +251,9 @@ export class FakeMediaStreamTrack<
 	override removeEventListener<K extends keyof FakeMediaStreamTrackEventMap>(
 		type: K,
 		listener: (
-			this: FakeMediaStreamTrack,
+			this: FakeMediaStreamTrack<AppData>,
 			ev: FakeMediaStreamTrackEventMap[K]
-		) => any,
+		) => void,
 		options?: boolean | FakeEventListenerOptions
 	): void {
 		super.removeEventListener(type, listener, options);
@@ -298,8 +286,8 @@ export class FakeMediaStreamTrack<
 	}: {
 		id?: string;
 		data?: ClonedFakeMediaStreamTrackAppData;
-	} = {}): FakeMediaStreamTrack {
-		return new FakeMediaStreamTrack({
+	} = {}): FakeMediaStreamTrack<ClonedFakeMediaStreamTrackAppData> {
+		return new FakeMediaStreamTrack<ClonedFakeMediaStreamTrackAppData>({
 			id: id ?? uuidv4(),
 			kind: this.#kind,
 			label: this.#label,

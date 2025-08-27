@@ -1,6 +1,16 @@
 import { FakeEvent } from './FakeEvent';
 
-export type FakeEventListener = (evt: FakeEvent) => void;
+export type FakeEventListenerOrEventListenerObject =
+	| FakeEventListener
+	| FakeEventListenerObject;
+
+export interface FakeEventListener {
+	(evt: FakeEvent): void;
+}
+
+export interface FakeEventListenerObject {
+	handleEvent(object: FakeEvent): void;
+}
 
 export interface FakeAddEventListenerOptions {
 	capture?: boolean;
