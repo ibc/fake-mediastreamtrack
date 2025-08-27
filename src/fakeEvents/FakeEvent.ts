@@ -1,4 +1,4 @@
-export class FakeEvent {
+export class FakeEvent implements Event {
 	/**
 	 * Constants.
 	 */

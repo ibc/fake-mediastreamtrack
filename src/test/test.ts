@@ -1,4 +1,5 @@
 import { FakeMediaStreamTrack } from '../';
+import { FakeEvent } from '../fakeEvents/FakeEvent';
 
 const UuidV4Regex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -111,7 +112,7 @@ describe('FakeMediaStreamTrack', () => {
 
 	describe('events', () => {
 		let track: FakeMediaStreamTrack;
-		let dispatchEventSpy: jest.SpyInstance<boolean, [event: Event]>;
+		let dispatchEventSpy: jest.SpyInstance<boolean, [event: FakeEvent]>;
 
 		beforeEach(() => {
 			track = new FakeMediaStreamTrack({

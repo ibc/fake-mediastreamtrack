@@ -1,5 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { FakeEventTarget, FakeListenerOptions } from './FakeEventTarget';
+import { FakeEventTarget } from './fakeEvents/FakeEventTarget';
+import {
+	FakeAddEventListenerOptions,
+	FakeEventListenerOptions,
+} from './fakeEvents/FakeEventListener';
+import { FakeEvent } from './fakeEvents/FakeEvent';
 import { clone } from './utils';
 
 export type AppData = {
@@ -23,8 +28,8 @@ export type FakeMediaStreamTrackOptions<
 };
 
 export interface FakeMediaStreamTrackEventMap extends MediaStreamTrackEventMap {
-	stopped: Event;
-	enabledchange: Event;
+	stopped: FakeEvent;
+	enabledchange: FakeEvent;
 }
 
 export class FakeMediaStreamTrack<
@@ -45,13 +50,15 @@ export class FakeMediaStreamTrack<
 	#settings: MediaTrackSettings;
 	#data: FakeMediaStreamTrackAppData;
 	// Events.
-	#onmute: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
-	#onunmute: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
-	#onended: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
+	#onmute: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
+	#onunmute: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
+	#onended: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null = null;
 	// Custom events.
-	#onenabledchange: ((this: FakeMediaStreamTrack, ev: Event) => any) | null =
+	#onenabledchange:
+		| ((this: FakeMediaStreamTrack, ev: FakeEvent) => any)
+		| null = null;
+	#onstopped: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null =
 		null;
-	#onstopped: ((this: FakeMediaStreamTrack, ev: Event) => any) | null = null;
 
 	constructor({
 		kind,
@@ -114,7 +121,7 @@ export class FakeMediaStreamTrack<
 		this.#enabled = enabled;
 
 		if (changed) {
-			this.dispatchEvent(new Event('enabledchange'));
+			this.dispatchEvent(new FakeEvent('enabledchange'));
 		}
 	}
 
@@ -140,11 +147,15 @@ export class FakeMediaStreamTrack<
 		this.#data = data;
 	}
 
-	get onmute(): ((this: MediaStreamTrack, ev: Event) => any) | null {
-		return this.#onmute as ((this: MediaStreamTrack, ev: Event) => any) | null;
+	get onmute(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
+		return this.#onmute as
+			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
+			| null;
 	}
 
-	set onmute(handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null) {
+	set onmute(
+		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
+	) {
 		if (this.#onmute) {
 			this.removeEventListener('mute', this.#onmute);
 		}
@@ -156,14 +167,14 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onunmute(): ((this: MediaStreamTrack, ev: Event) => any) | null {
+	get onunmute(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
 		return this.#onunmute as
-			| ((this: MediaStreamTrack, ev: Event) => any)
+			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
 			| null;
 	}
 
 	set onunmute(
-		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
+		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
 	) {
 		if (this.#onunmute) {
 			this.removeEventListener('unmute', this.#onunmute);
@@ -176,12 +187,14 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onended(): ((this: MediaStreamTrack, ev: Event) => any) | null {
-		return this.#onended as ((this: MediaStreamTrack, ev: Event) => any) | null;
+	get onended(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
+		return this.#onended as
+			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
+			| null;
 	}
 
 	set onended(
-		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
+		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
 	) {
 		if (this.#onended) {
 			this.removeEventListener('ended', this.#onended);
@@ -194,14 +207,16 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onenabledchange(): ((this: MediaStreamTrack, ev: Event) => any) | null {
+	get onenabledchange():
+		| ((this: MediaStreamTrack, ev: FakeEvent) => any)
+		| null {
 		return this.#onenabledchange as
-			| ((this: MediaStreamTrack, ev: Event) => any)
+			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
 			| null;
 	}
 
 	set onenabledchange(
-		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
+		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
 	) {
 		if (this.#onenabledchange) {
 			this.removeEventListener('enabledchange', this.#onenabledchange);
@@ -214,14 +229,14 @@ export class FakeMediaStreamTrack<
 		}
 	}
 
-	get onstopped(): ((this: MediaStreamTrack, ev: Event) => any) | null {
+	get onstopped(): ((this: MediaStreamTrack, ev: FakeEvent) => any) | null {
 		return this.#onstopped as
-			| ((this: MediaStreamTrack, ev: Event) => any)
+			| ((this: MediaStreamTrack, ev: FakeEvent) => any)
 			| null;
 	}
 
 	set onstopped(
-		handler: ((this: FakeMediaStreamTrack, ev: Event) => any) | null
+		handler: ((this: FakeMediaStreamTrack, ev: FakeEvent) => any) | null
 	) {
 		if (this.#onstopped) {
 			this.removeEventListener('stopped', this.#onstopped);
@@ -240,7 +255,7 @@ export class FakeMediaStreamTrack<
 			this: FakeMediaStreamTrack,
 			ev: FakeMediaStreamTrackEventMap[K]
 		) => any,
-		options?: FakeListenerOptions
+		options?: boolean | FakeAddEventListenerOptions
 	): void {
 		super.addEventListener(type, listener, options);
 	}
@@ -250,9 +265,10 @@ export class FakeMediaStreamTrack<
 		listener: (
 			this: FakeMediaStreamTrack,
 			ev: FakeMediaStreamTrackEventMap[K]
-		) => any
+		) => any,
+		options?: boolean | FakeEventListenerOptions
 	): void {
-		super.removeEventListener(type, listener);
+		super.removeEventListener(type, listener, options);
 	}
 
 	/**
@@ -266,7 +282,7 @@ export class FakeMediaStreamTrack<
 
 		this.#readyState = 'ended';
 
-		this.dispatchEvent(new Event('stopped'));
+		this.dispatchEvent(new FakeEvent('stopped'));
 	}
 
 	/**
@@ -330,8 +346,8 @@ export class FakeMediaStreamTrack<
 
 		this.#readyState = 'ended';
 
-		this.dispatchEvent(new Event('stopped'));
-		this.dispatchEvent(new Event('ended'));
+		this.dispatchEvent(new FakeEvent('stopped'));
+		this.dispatchEvent(new FakeEvent('ended'));
 	}
 
 	/**
@@ -345,7 +361,7 @@ export class FakeMediaStreamTrack<
 
 		this.#muted = true;
 
-		this.dispatchEvent(new Event('mute'));
+		this.dispatchEvent(new FakeEvent('mute'));
 	}
 
 	/**
@@ -359,6 +375,6 @@ export class FakeMediaStreamTrack<
 
 		this.#muted = false;
 
-		this.dispatchEvent(new Event('unmute'));
+		this.dispatchEvent(new FakeEvent('unmute'));
 	}
 }

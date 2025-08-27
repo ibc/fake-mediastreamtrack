@@ -1,10 +1,9 @@
+import {
+	FakeEventListener,
+	FakeAddEventListenerOptions,
+	FakeEventListenerOptions,
+} from './FakeEventListener';
 import { FakeEvent } from './FakeEvent';
-
-type FakeEventListener = (event: FakeEvent) => void;
-
-export interface FakeListenerOptions {
-	once?: boolean;
-}
 
 interface FakeListenerEntry {
 	callback: FakeEventListener;
@@ -17,7 +16,7 @@ export class FakeEventTarget implements EventTarget {
 	addEventListener(
 		type: string,
 		callback: FakeEventListener,
-		options: FakeListenerOptions = {}
+		options?: boolean | FakeAddEventListenerOptions
 	): void {
 		if (!callback) {
 			return;
@@ -27,11 +26,16 @@ export class FakeEventTarget implements EventTarget {
 
 		this.listeners[type].push({
 			callback,
-			once: options.once === true,
+			once: typeof options === 'object' && options.once === true,
 		});
 	}
 
-	removeEventListener(type: string, callback: FakeEventListener): void {
+	removeEventListener(
+		type: string,
+		callback: FakeEventListener,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		options?: boolean | FakeEventListenerOptions
+	): void {
 		if (!this.listeners[type]) {
 			return;
 		}
@@ -41,7 +45,7 @@ export class FakeEventTarget implements EventTarget {
 		);
 	}
 
-	dispatchEvent(event: Event): boolean {
+	dispatchEvent(event: FakeEvent): boolean {
 		if (!event || typeof event.type !== 'string') {
 			throw new Error('invalid event object');
 		}
