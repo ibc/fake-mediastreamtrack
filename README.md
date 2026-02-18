@@ -1,5 +1,7 @@
 # fake-mediastreamtrack
 
+[![][github-actions-shield-fake-mediastreamtrack]][github-actions-fake-mediastreamtrack]
+
 Fake W3C [MediaStreamTrack](https://www.w3.org/TR/mediacapture-streams/#mediastreamtrack) implementation. Suitable for for Node.js or testing.
 
 This library is intended for Node.js applications or libraries that depend on the `MediaStreamTrack` objects. The exposed `FakeMediaStreamTrack` class does not internally manage any audio/video source.
@@ -135,3 +137,6 @@ track.remoteStop();
 ## License
 
 ISC
+
+[github-actions-shield-fake-mediastreamtrack]: https://github.com/ibc/fake-mediastreamtrack/actions/workflows/fake-mediastreamtrack.yaml/badge.svg?branch=master
+[github-actions-fake-mediastreamtrack]: https://github.com/ibc/fake-mediastreamtrack/actions/workflows/fake-mediastreamtrack.yaml?query=branch%3Amaster

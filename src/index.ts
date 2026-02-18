@@ -33,8 +33,8 @@ export interface FakeMediaStreamTrackEventMap extends MediaStreamTrackEventMap {
 }
 
 export class FakeMediaStreamTrack<
-		FakeMediaStreamTrackAppData extends AppData = AppData,
-	>
+	FakeMediaStreamTrackAppData extends AppData = AppData,
+>
 	extends FakeEventTarget
 	implements MediaStreamTrack
 {
@@ -278,8 +278,8 @@ export class FakeMediaStreamTrack<
 	 * can be optionally given.
 	 */
 	clone<
-		ClonedFakeMediaStreamTrackAppData extends
-			AppData = FakeMediaStreamTrackAppData,
+		ClonedFakeMediaStreamTrackAppData extends AppData =
+			FakeMediaStreamTrackAppData,
 	>({
 		id,
 		data,
